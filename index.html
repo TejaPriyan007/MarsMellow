@@ -1,0 +1,2622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Mellow GC - Elite Esports Organization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --gold: #fbbf24;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --card-bg: #1a2332;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.8);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 50%, #0f172a 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Anime Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: url('https://images.unsplash.com/photo-1578665411127-7e63b6dbf35c?w=1920&q=80') center/cover fixed;
+            opacity: 0.15;
+        }
+
+        .anime-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image:
+                linear-gradient(0deg, transparent 24%, rgba(139, 92, 246, 0.05) 25%, rgba(139, 92, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.05) 75%, rgba(139, 92, 246, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(139, 92, 246, 0.05) 25%, rgba(139, 92, 246, 0.05) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.05) 75%, rgba(139, 92, 246, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            animation: gridShift 20s linear infinite;
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(26, 31, 58, 0.85) 50%, rgba(15, 23, 42, 0.9) 100%);
+            pointer-events: none;
+        }
+
+        @keyframes gridShift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50px); }
+        }
+
+        /* Dynamic Particles Container */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .particle.type-1 {
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, var(--primary), transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .particle.type-2 {
+            width: 2px;
+            height: 2px;
+            background: var(--secondary);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .particle.type-3 {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .particle {
+            animation: particleFloat 20s infinite linear;
+        }
+
+        /* Header Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.6));
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Sound Toggle Button */
+        .sound-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: 2px solid var(--accent);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            animation: soundPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes soundPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .sound-toggle:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.8);
+        }
+
+        .sound-toggle.muted {
+            background: linear-gradient(135deg, #555, #333);
+            opacity: 0.6;
+        }
+
+        /* Main Header */
+        header {
+            padding: 150px 2rem 60px;
+            text-align: center;
+            position: relative;
+            margin-top: 60px;
+            z-index: 2;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .anime-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3));
+            animation: titlePulse 3s ease-in-out infinite, slideInDown 1s ease-out;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.6)); }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Main Subtitle */
+        .main-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        /* Tagline - "Friends who met randomly but stayed forever" */
+        .tagline-main {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            font-style: italic;
+            animation: slideInUp 1s ease-out 0.3s both;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            border-left: 4px solid var(--primary);
+            border-right: 4px solid var(--secondary);
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Points Section */
+        .points-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .point-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .point-card:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.25));
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+            border-color: var(--secondary);
+        }
+
+        .point-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .point-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .point-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .tagline {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            border: 2px solid var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: bounce 2s ease-in-out infinite, slideInUp 1s ease-out 0.5s both;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tagline:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Section Title */
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 80px 0 60px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+            animation: scaleIn 0.8s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            margin: 0 auto 20px;
+            border-radius: 2px;
+            animation: expandWidth 0.8s ease-out;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            margin: 20px auto 0;
+            border-radius: 2px;
+            animation: expandWidth 0.8s ease-out 0.2s both;
+        }
+
+        /* Members Grid */
+        .members-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2.5rem;
+        }
+
+        /* 3D Flip Card */
+        .character-card {
+            height: 400px;
+            cursor: pointer;
+            animation: cardFadeIn 0.6s ease-out forwards;
+            perspective: 1200px;
+            position: relative;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotateX(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .character-card:nth-child(1) { animation-delay: 0.1s; }
+        .character-card:nth-child(2) { animation-delay: 0.2s; }
+        .character-card:nth-child(3) { animation-delay: 0.3s; }
+        .character-card:nth-child(4) { animation-delay: 0.4s; }
+        .character-card:nth-child(5) { animation-delay: 0.5s; }
+        .character-card:nth-child(6) { animation-delay: 0.6s; }
+        .character-card:nth-child(7) { animation-delay: 0.7s; }
+        .character-card:nth-child(8) { animation-delay: 0.8s; }
+        .character-card:nth-child(9) { animation-delay: 0.9s; }
+        .character-card:nth-child(10) { animation-delay: 1s; }
+        .character-card:nth-child(11) { animation-delay: 1.1s; }
+        .character-card:nth-child(12) { animation-delay: 1.2s; }
+        .character-card:nth-child(13) { animation-delay: 1.3s; }
+        .character-card:nth-child(14) { animation-delay: 1.4s; }
+        .character-card:nth-child(15) { animation-delay: 1.5s; }
+        .character-card:nth-child(16) { animation-delay: 1.6s; }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-style: preserve-3d;
+        }
+
+        .character-card:hover .card-inner {
+            transform: rotateY(180deg) rotateX(5deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            border: 3px solid var(--primary);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .card-front {
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            border: 3px solid var(--secondary);
+        }
+
+        .character-card:hover .card-front {
+            box-shadow: 0 30px 80px rgba(139, 92, 246, 0.8);
+        }
+
+        /* Card Header - Name */
+        .card-header {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+            z-index: 10;
+        }
+
+        .character-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--gold), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.8));
+            margin-bottom: 0.3rem;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .character-role {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Card Image */
+        .character-image {
+            width: 100%;
+            flex: 1;
+            object-fit: cover;
+            transition: transform 0.4s ease, filter 0.4s ease;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(236, 72, 153, 0.5));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            filter: brightness(1) contrast(1.1) saturate(1.1);
+        }
+
+        .character-card:hover .character-image {
+            transform: scale(1.08) rotateZ(-2deg);
+            filter: brightness(1.1) contrast(1.2) saturate(1.2) drop-shadow(0 0 20px rgba(139, 92, 246, 0.9));
+        }
+
+        /* Card Stats */
+        .card-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95), rgba(26, 35, 50, 0.99));
+            border-top: 2px solid var(--primary);
+        }
+
+        .stat {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.1));
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+            font-weight: 700;
+        }
+
+        /* Games Section */
+        .games-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem 100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.95), rgba(26, 35, 50, 0.99));
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: gameCardFadeIn 0.6s ease-out forwards;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        @keyframes gameCardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.8);
+            border-color: var(--secondary);
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .game-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .game-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .play-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            width: 100%;
+        }
+
+        .play-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.8);
+        }
+
+        .play-button:active {
+            transform: translateY(0);
+        }
+
+        /* Game Arena Modal */
+        .game-arena-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInModal 0.5s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-arena-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .game-arena-content {
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.98), rgba(26, 35, 50, 0.99));
+            border-radius: 25px;
+            overflow: hidden;
+            max-width: 600px;
+            width: 95%;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 100px rgba(139, 92, 246, 1);
+            animation: arenaSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes arenaSlideIn {
+            from {
+                transform: scale(0) rotateY(180deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotateY(0);
+                opacity: 1;
+            }
+        }
+
+        .arena-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            border-bottom: 3px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .arena-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .arena-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--primary);
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .arena-close:hover {
+            transform: rotate(90deg) scale(1.3);
+            color: var(--secondary);
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .arena-body {
+            padding: 2rem;
+        }
+
+        /* Flappy Bird Game */
+        #gameCanvas {
+            background: linear-gradient(135deg, #1a1f3a 0%, #0f172a 100%);
+            border: 3px solid var(--primary);
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto 2rem;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .game-score {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .control-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.8);
+        }
+
+        .control-button.active {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+        }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.5);
+        }
+
+        .memory-card.flipped {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(236, 72, 153, 0.6));
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(6, 182, 212, 0.3));
+            border-color: var(--gold);
+            cursor: default;
+            opacity: 0.8;
+        }
+
+        .memory-stats {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .memory-stat {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .memory-stat-value {
+            color: var(--gold);
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* Reaction Game */
+        .reaction-box {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 3rem;
+        }
+
+        .reaction-box.waiting {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.4), rgba(139, 92, 246, 0.4));
+            border-color: var(--secondary);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .reaction-box.active {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.6), rgba(251, 191, 36, 0.6));
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.8);
+        }
+
+        .reaction-result {
+            text-align: center;
+            color: var(--gold);
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInModal 0.5s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(26, 35, 50, 0.98), rgba(26, 35, 50, 0.99));
+            border-radius: 25px;
+            overflow: hidden;
+            max-width: 500px;
+            width: 95%;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 100px rgba(139, 92, 246, 1), 0 0 50px rgba(236, 72, 153, 0.8);
+            animation: modalSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0) rotateY(180deg) rotateX(20deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotateY(0) rotateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            animation: imageZoom 0.8s ease-out;
+            position: relative;
+            z-index: 3;
+            filter: brightness(1.1) contrast(1.2) saturate(1.1);
+        }
+
+        @keyframes imageZoom {
+            from {
+                transform: scale(1.8) rotateZ(5deg);
+                opacity: 0;
+                filter: blur(10px);
+            }
+            to {
+                transform: scale(1) rotateZ(0);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+
+        .modal-info {
+            padding: 2rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal-info::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-info::-webkit-scrollbar-track {
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+        }
+
+        .modal-info::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .modal-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--gold), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            animation: titleSlide 0.8s ease-out 0.2s both;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        @keyframes titleSlide {
+            from {
+                transform: translateX(-40px) rotateY(90deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) rotateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-role {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .modal-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.8rem;
+            font-size: 0.95rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .modal-stats-full {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .stat-full {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.15));
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-full:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.25));
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.4);
+        }
+
+        .stat-full-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 0.4rem;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+
+        .stat-full-label {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        .modal-close {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .modal-close:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(139, 92, 246, 0.8);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+            z-index: 2001;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg) scale(1.3);
+            color: var(--secondary);
+            background: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 3px solid var(--primary);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            background: rgba(139, 92, 246, 0.15);
+            text-decoration: none;
+            animation: socialPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes socialPop {
+            from {
+                transform: scale(0) rotate(180deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        .social-icon:nth-child(1) { animation-delay: 0.1s; }
+        .social-icon:nth-child(2) { animation-delay: 0.2s; }
+        .social-icon:nth-child(3) { animation-delay: 0.3s; }
+        .social-icon:nth-child(4) { animation-delay: 0.4s; }
+
+        .social-icon:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transform: translateY(-10px) scale(1.2) rotate(10deg);
+            box-shadow: 0 20px 50px rgba(139, 92, 246, 0.9);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .members-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                max-width: 90%;
+            }
+
+            .modal-stats-full {
+                grid-template-columns: 1fr;
+            }
+
+            .character-card {
+                height: 350px;
+            }
+
+            .modal-image {
+                height: 250px;
+            }
+
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .character-name {
+                font-size: 1.2rem;
+            }
+
+            .modal-content {
+                width: 100%;
+                border-radius: 20px;
+            }
+
+            .memory-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="anime-grid"></div>
+    <div class="gradient-overlay"></div>
+    <div class="particles-container" id="particles-container"></div>
+
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="soundToggle" title="Toggle Sound">
+        <span id="soundIcon">🔊</span>
+    </button>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">🍡 MARS MELLOW GC</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#games">Games</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Header -->
+    <header id="home">
+        <div class="header-content">
+            <h1 class="anime-title">MARS MELLOW GC</h1>
+            <p class="main-subtitle">Elite Esports Organization</p>
+            
+            <!-- Main Tagline -->
+            <div class="tagline-main">
+                "Friends who met randomly but stayed forever" 🍡✨
+            </div>
+
+            <!-- Points Section -->
+            <div class="points-section">
+                <div class="point-card">
+                    <div class="point-icon">🎮</div>
+                    <div class="point-title">16 Players</div>
+                    <div class="point-text">Elite team of competitive gamers</div>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">🏆</div>
+                    <div class="point-title">Championship</div>
+                    <div class="point-text">Dominating the leaderboards</div>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">💪</div>
+                    <div class="point-title">United</div>
+                    <div class="point-text">Strong bond & teamwork</div>
+                </div>
+                <div class="point-card">
+                    <div class="point-icon">⚡</div>
+                    <div class="point-title">Lightning Fast</div>
+                    <div class="point-text">Unbeatable speed & strategy</div>
+                </div>
+            </div>
+
+            <div class="tagline">Professional Gaming Collective - 16 Players Strong</div>
+        </div>
+    </header>
+
+    <!-- Team Section -->
+    <section id="team">
+        <h2 class="section-title">Exceptional Players</h2>
+        
+        <div class="members-container">
+            <div class="members-grid" id="members-grid">
+                <!-- SUZU -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Suzu</div>
+                                <div class="character-role">Mid Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/N6NNKTRx/image.jpg" alt="Suzu" class="character-image" onerror="this.innerHTML='🧊';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Skill</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Strategy</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.5</div>
+                                    <div class="stat-label">Speed</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">💎 Suzu</div>
+                                <div class="card-back-text">Master of Mid Lane</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Carry</span>
+                                    <span class="badge">Playmaker</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DINA -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Dina</div>
+                                <div class="character-role">Support</div>
+                            </div>
+                            <img src="https://i.ibb.co/ns0hyXtZ/image.jpg" alt="Dina" class="character-image" onerror="this.innerHTML='💕';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Support</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Teamwork</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.7</div>
+                                    <div class="stat-label">Control</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🌟 Dina</div>
+                                <div class="card-back-text">Protector of victories</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Protector</span>
+                                    <span class="badge">Leader</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GARIMA -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Garima</div>
+                                <div class="character-role">ADC</div>
+                            </div>
+                            <img src="https://i.ibb.co/hJ74bqpv/image.jpg" alt="Garima" class="character-image" onerror="this.innerHTML='🔥';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.4</div>
+                                    <div class="stat-label">Damage</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Accuracy</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.6</div>
+                                    <div class="stat-label">Positioning</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">⚡ Garima</div>
+                                <div class="card-back-text">Unstoppable dealer</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Carry</span>
+                                    <span class="badge">Precision</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEJA -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Teja</div>
+                                <div class="character-role">Top Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/Df8Rb9kp/image.jpg" alt="Teja" class="character-image" onerror="this.innerHTML='👤';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.3</div>
+                                    <div class="stat-label">Tanking</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Mechanics</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Leadership</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🛡️ Teja</div>
+                                <div class="card-back-text">Tankmaster leader</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Tank</span>
+                                    <span class="badge">Captain</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SHUV -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Shuv</div>
+                                <div class="character-role">Jungler</div>
+                            </div>
+                            <img src="https://i.ibb.co/c9s0vHH/image.jpg" alt="Shuv" class="character-image" onerror="this.innerHTML='⚡';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Ganking</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.3</div>
+                                    <div class="stat-label">Map Control</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Timing</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🌪️ Shuv</div>
+                                <div class="card-back-text">Map orchestrator</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Ganker</span>
+                                    <span class="badge">Strategist</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HIMANSHU -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Himanshu</div>
+                                <div class="character-role">Coach</div>
+                            </div>
+                            <img src="https://i.ibb.co/MDnKsz4c/image.jpg" alt="Himanshu" class="character-image" onerror="this.innerHTML='🧠';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.5</div>
+                                    <div class="stat-label">Strategy</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.4</div>
+                                    <div class="stat-label">Analysis</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Experience</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">👑 Himanshu</div>
+                                <div class="card-back-text">Visionary coach</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Coach</span>
+                                    <span class="badge">Mentor</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BECKY -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Becky</div>
+                                <div class="character-role">Marksman</div>
+                            </div>
+                            <img src="https://i.ibb.co/Q32WQnqB/image.jpg" alt="Becky" class="character-image" onerror="this.innerHTML='💗';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Precision</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Farming</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Teamfight</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">💘 Becky</div>
+                                <div class="card-back-text">Precision marksman</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Carry</span>
+                                    <span class="badge">Focus</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRIYA -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Priya</div>
+                                <div class="character-role">Mid Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/Kx9g28Sh/image.jpg" alt="Priya" class="character-image" onerror="this.innerHTML='✨';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.3</div>
+                                    <div class="stat-label">Skill</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Rotation</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Control</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">✨ Priya</div>
+                                <div class="card-back-text">Mid lane maestro</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Playmaker</span>
+                                    <span class="badge">Rotator</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SPIDEY -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Spidey</div>
+                                <div class="character-role">Jungler</div>
+                            </div>
+                            <img src="https://i.ibb.co/FLyqKzDg/image.jpg" alt="Spidey" class="character-image" onerror="this.innerHTML='🕸️';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Ganking</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Presence</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Timing</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🕸️ Spidey</div>
+                                <div class="card-back-text">Web-spinning jungler</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Ganker</span>
+                                    <span class="badge">Presence</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUNIDHI -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Sunidhi</div>
+                                <div class="character-role">Support</div>
+                            </div>
+                            <img src="https://i.ibb.co/G42GwxBt/image.jpg" alt="Sunidhi" class="character-image" onerror="this.innerHTML='☀️';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Support</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Vision</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Engagement</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">☀️ Sunidhi</div>
+                                <div class="card-back-text">Radiant support</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Vision</span>
+                                    <span class="badge">Engage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMRAN -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Simran</div>
+                                <div class="character-role">ADC</div>
+                            </div>
+                            <img src="https://i.ibb.co/pjMtFLfn/image.jpg" alt="Simran" class="character-image" onerror="this.innerHTML='💫';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.2</div>
+                                    <div class="stat-label">Damage</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Kiting</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Positioning</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">💫 Simran</div>
+                                <div class="card-back-text">Stellar ADC</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Carry</span>
+                                    <span class="badge">Kiting</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIBHI -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Sibhi</div>
+                                <div class="character-role">Top Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/rRmXZ4vm/image.jpg" alt="Sibhi" class="character-image" onerror="this.innerHTML='🔱';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Durability</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Engagement</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Trading</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🔱 Sibhi</div>
+                                <div class="card-back-text">Powerful warrior</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Durable</span>
+                                    <span class="badge">Fighter</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REN -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Ren</div>
+                                <div class="character-role">Mid Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/mrJTXGx2/image.jpg" alt="Ren" class="character-image" onerror="this.innerHTML='🌸';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Mechanics</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Roaming</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Teamwork</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🌸 Ren</div>
+                                <div class="card-back-text">Blooming mid laner</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Roamer</span>
+                                    <span class="badge">Teamfight</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TITI -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Titi</div>
+                                <div class="character-role">Support</div>
+                            </div>
+                            <img src="https://i.ibb.co/MDB4w1Zv/image.jpg" alt="Titi" class="character-image" onerror="this.innerHTML='🦋';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Support</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Warding</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Roaming</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🦋 Titi</div>
+                                <div class="card-back-text">Graceful guardian</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Ward</span>
+                                    <span class="badge">Roamer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HUTAO -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Hutao</div>
+                                <div class="character-role">Mid Laner</div>
+                            </div>
+                            <img src="https://i.ibb.co/Wv1PBmwr/image.jpg" alt="Hutao" class="character-image" onerror="this.innerHTML='🔴';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.3</div>
+                                    <div class="stat-label">Burst</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Combo</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Positioning</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🔴 Hutao</div>
+                                <div class="card-back-text">Burst specialist</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Burst</span>
+                                    <span class="badge">Combo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAM -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Sam</div>
+                                <div class="character-role">ADC</div>
+                            </div>
+                            <img src="https://i.ibb.co/CK5Qc3Ld/image.jpg" alt="Sam" class="character-image" onerror="this.innerHTML='🎯';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Damage</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Focus</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.8</div>
+                                    <div class="stat-label">Kiting</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🎯 Sam</div>
+                                <div class="card-back-text">Accurate marksman</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Carry</span>
+                                    <span class="badge">Accurate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DIONISI -->
+                <div class="character-card" onclick="openModal(this)">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="character-name">Dionisi</div>
+                                <div class="character-role">Jungler</div>
+                            </div>
+                            <img src="https://i.ibb.co/bgkzGC7y/image.jpg" alt="Dionisi" class="character-image" onerror="this.innerHTML='🍇';">
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">9.0</div>
+                                    <div class="stat-label">Ganking</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">8.9</div>
+                                    <div class="stat-label">Farming</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">9.1</div>
+                                    <div class="stat-label">Objective</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-content">
+                                <div class="card-back-title">🍇 Dionisi</div>
+                                <div class="card-back-text">Objective-focused</div>
+                                <div class="card-back-badges">
+                                    <span class="badge">Objective</span>
+                                    <span class="badge">Farmer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games">
+        <h2 class="section-title">Anime Mini Games 🎮</h2>
+        
+        <div class="games-container">
+            <div class="games-grid">
+                <!-- Flappy Bird Game -->
+                <div class="game-card">
+                    <div class="game-icon">🐦</div>
+                    <div class="game-title">Flappy Bird</div>
+                    <div class="game-description">Navigate through pipes! Click or Space to jump. Can you beat your high score?</div>
+                    <button class="play-button" onclick="startFlappyBird()">Play Now</button>
+                </div>
+
+                <!-- Memory Game -->
+                <div class="game-card">
+                    <div class="game-icon">🧠</div>
+                    <div class="game-title">Memory Match</div>
+                    <div class="game-description">Match the anime emojis! Test your memory and concentration skills.</div>
+                    <button class="play-button" onclick="startMemoryGame()">Play Now</button>
+                </div>
+
+                <!-- Reaction Time Game -->
+                <div class="game-card">
+                    <div class="game-icon">⚡</div>
+                    <div class="game-title">Reaction Time</div>
+                    <div class="game-description">Click when the box changes color! Test your reaction speed.</div>
+                    <button class="play-button" onclick="startReactionGame()">Play Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Arena Modal -->
+    <div class="game-arena-modal" id="gameArenaModal">
+        <div class="game-arena-content">
+            <div class="arena-header">
+                <div class="arena-title" id="arenaTitle">Game</div>
+                <button class="arena-close" onclick="closeGameArena()">✕</button>
+            </div>
+            <div class="arena-body" id="arenaBody">
+                <!-- Game content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Modal -->
+    <div class="modal" id="characterModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <img src="" alt="" class="modal-image" id="modalImage">
+            <div class="modal-header">
+                <div class="modal-name" id="modalName"></div>
+                <div class="modal-role" id="modalRole"></div>
+            </div>
+            <div class="modal-info">
+                <div class="modal-description" id="modalDescription"></div>
+                <div class="modal-stats-full" id="modalStats"></div>
+                <button class="modal-close" onclick="closeModal()">Close Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="social-links">
+            <a href="#" class="social-icon" title="Instagram">📷</a>
+            <a href="#" class="social-icon" title="Twitter">𝕏</a>
+            <a href="#" class="social-icon" title="Discord">💬</a>
+            <a href="#" class="social-icon" title="YouTube">▶️</a>
+        </div>
+        <p class="footer-text">&copy; 2026 Mars Mellow GC | Elite Esports Organization - Friends who met randomly but stayed forever | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Sound System
+        const soundToggle = document.getElementById('soundToggle');
+        const soundIcon = document.getElementById('soundIcon');
+        let soundEnabled = true;
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            switch(type) {
+                case 'hover':
+                    osc.frequency.value = 800;
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                    break;
+                case 'flip':
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+                    osc.type = 'triangle';
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                    break;
+                case 'modal':
+                    const frequencies = [523.25, 659.25, 783.99];
+                    frequencies.forEach((freq) => {
+                        const osc2 = audioContext.createOscillator();
+                        const gain2 = audioContext.createGain();
+                        osc2.connect(gain2);
+                        gain2.connect(audioContext.destination);
+                        osc2.frequency.value = freq;
+                        osc2.type = 'sine';
+                        gain2.gain.setValueAtTime(0.08, now);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                        osc2.start(now);
+                        osc2.stop(now + 0.4);
+                    });
+                    break;
+            }
+        }
+
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+            soundToggle.classList.toggle('muted');
+            playSound('flip');
+        });
+
+        // Particles
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleTypes = ['type-1', 'type-2', 'type-3'];
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = `particle ${particleTypes[Math.floor(Math.random() * particleTypes.length)]}`;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Character Data
+        const characterData = {
+            'Suzu': { role: 'Mid Laner', description: 'Master of Mid Lane with incredible map awareness and lightning-fast reflexes. Suzu dominates with strategic brilliance.', stats: [{ label: 'Skill', value: 9.2 }, { label: 'Strategy', value: 8.8 }, { label: 'Speed', value: 9.5 }, { label: 'Pool', value: 9.1 }] },
+            'Dina': { role: 'Support', description: 'Dedicated support main with unparalleled positioning and game sense. Creates winning conditions through perfect plays.', stats: [{ label: 'Support', value: 8.9 }, { label: 'Teamwork', value: 9.1 }, { label: 'Control', value: 8.7 }, { label: 'Communication', value: 9.3 }] },
+            'Garima': { role: 'ADC', description: 'Dominant ADC with exceptional damage output and positioning. Consistently carries games with precision.', stats: [{ label: 'Damage', value: 9.4 }, { label: 'Accuracy', value: 9.0 }, { label: 'Positioning', value: 8.6 }, { label: 'Consistency', value: 9.2 }] },
+            'Teja': { role: 'Top Laner', description: 'Veteran top laner with incredible tankiness and presence. Controls fights and leads the team.', stats: [{ label: 'Tanking', value: 9.3 }, { label: 'Mechanics', value: 8.9 }, { label: 'Leadership', value: 9.2 }, { label: 'Impact', value: 9.0 }] },
+            'Shuv': { role: 'Jungler', description: 'Aggressive jungler with perfect gank timing and map control. Orchestrates team fights with expertise.', stats: [{ label: 'Ganking', value: 9.1 }, { label: 'Map Control', value: 9.3 }, { label: 'Timing', value: 8.8 }, { label: 'Objective', value: 9.2 }] },
+            'Himanshu': { role: 'Coach', description: 'Experienced coach with deep strategic knowledge. Develops winning strategies and transforms players into champions.', stats: [{ label: 'Strategy', value: 9.5 }, { label: 'Analysis', value: 9.4 }, { label: 'Experience', value: 9.2 }, { label: 'Leadership', value: 9.3 }] },
+            'Becky': { role: 'Marksman', description: 'Precision marksman specialist with excellent farming abilities. Delivers consistent damage throughout the game.', stats: [{ label: 'Precision', value: 9.0 }, { label: 'Farming', value: 8.9 }, { label: 'Teamfight', value: 8.8 }, { label: 'Clutch', value: 8.9 }] },
+            'Priya': { role: 'Mid Laner', description: 'Mid lane maestro with exceptional rotation and control abilities. Masters the art of playmaking.', stats: [{ label: 'Skill', value: 9.3 }, { label: 'Rotation', value: 9.1 }, { label: 'Control', value: 8.9 }, { label: 'Roam', value: 9.0 }] },
+            'Spidey': { role: 'Jungler', description: 'Web-spinning jungler with strong presence and gank coordination. Creates opportunities everywhere on the map.', stats: [{ label: 'Ganking', value: 9.2 }, { label: 'Presence', value: 9.0 }, { label: 'Timing', value: 8.9 }, { label: 'Impact', value: 9.1 }] },
+            'Sunidhi': { role: 'Support', description: 'Radiant support player with excellent engagement and vision control. Lights up the game with perfect plays.', stats: [{ label: 'Support', value: 9.1 }, { label: 'Vision', value: 8.9 }, { label: 'Engagement', value: 9.2 }, { label: 'Roam', value: 8.8 }] },
+            'Simran': { role: 'ADC', description: 'Stellar ADC with exceptional kiting abilities and positioning. Maintains perfect distance in teamfights.', stats: [{ label: 'Damage', value: 9.2 }, { label: 'Kiting', value: 9.1 }, { label: 'Positioning', value: 8.8 }, { label: 'Focus', value: 9.0 }] },
+            'Sibhi': { role: 'Top Laner', description: 'Powerful top lane warrior with high durability and presence. Dominates the top lane with strength.', stats: [{ label: 'Durability', value: 9.1 }, { label: 'Engagement', value: 8.8 }, { label: 'Trading', value: 9.0 }, { label: 'Macro', value: 8.9 }] },
+            'Ren': { role: 'Mid Laner', description: 'Blooming mid laner with excellent teamwork and roaming. Connects the team with perfect coordination.', stats: [{ label: 'Mechanics', value: 9.0 }, { label: 'Roaming', value: 8.9 }, { label: 'Teamwork', value: 9.1 }, { label: 'Macro', value: 8.9 }] },
+            'Titi': { role: 'Support', description: 'Graceful support guardian with great warding and playmaking. Protects the team with elegance.', stats: [{ label: 'Support', value: 8.8 }, { label: 'Warding', value: 9.0 }, { label: 'Roaming', value: 8.9 }, { label: 'Playmaking', value: 9.0 }] },
+            'Hutao': { role: 'Mid Laner', description: 'Burst damage specialist with perfect combos and positioning. Explodes with damage when needed.', stats: [{ label: 'Burst', value: 9.3 }, { label: 'Combo', value: 9.0 }, { label: 'Positioning', value: 8.9 }, { label: 'Impact', value: 9.1 }] },
+            'Sam': { role: 'ADC', description: 'Accurate ADC marksman with strong focus and farming. Maintains precise aim throughout the game.', stats: [{ label: 'Damage', value: 9.1 }, { label: 'Focus', value: 9.0 }, { label: 'Kiting', value: 8.8 }, { label: 'Farming', value: 9.1 }] },
+            'Dionisi': { role: 'Jungler', description: 'Objective-focused jungler with great macro play and control. Controls the map and secures objectives.', stats: [{ label: 'Ganking', value: 9.0 }, { label: 'Farming', value: 8.9 }, { label: 'Objective', value: 9.1 }, { label: 'Control', value: 9.0 }] }
+        };
+
+        // Card Interactions
+        document.querySelectorAll('.character-card').forEach(card => {
+            card.addEventListener('mouseenter', () => playSound('hover'));
+            card.addEventListener('click', () => playSound('flip'));
+        });
+
+        // Modal Functions
+        function openModal(card) {
+            const name = card.querySelector('.character-name').textContent;
+            const data = characterData[name];
+            playSound('modal');
+
+            document.getElementById('modalImage').src = card.querySelector('.character-image').src;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalRole').textContent = data.role;
+            document.getElementById('modalDescription').textContent = data.description;
+            
+            const statsHTML = data.stats.map(stat => `
+                <div class="stat-full">
+                    <div class="stat-full-value">${stat.value}</div>
+                    <div class="stat-full-label">${stat.label}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('modalStats').innerHTML = statsHTML;
+            document.getElementById('characterModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('characterModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('characterModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Game Arena Functions
+        function closeGameArena() {
+            document.getElementById('gameArenaModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Flappy Bird Game
+        function startFlappyBird() {
+            playSound('modal');
+            document.getElementById('arenaTitle').textContent = '🐦 Flappy Bird';
+            const arenaBody = document.getElementById('arenaBody');
+            arenaBody.innerHTML = `
+                <canvas id="gameCanvas" width="400" height="500"></canvas>
+                <div class="game-score">Score: <span id="flappyScore">0</span> | High: <span id="flappyHigh">0</span></div>
+                <div class="game-controls">
+                    <button class="control-button" onclick="restartFlappyBird()">Restart</button>
+                    <button class="control-button" onclick="closeGameArena()">Close</button>
+                </div>
+                <div style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                    <p>Click or Press SPACE to Jump! 🎮</p>
+                </div>
+            `;
+            document.getElementById('gameArenaModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                initFlappyBird();
+            }, 100);
+        }
+
+        function restartFlappyBird() {
+            initFlappyBird();
+        }
+
+        let flappyGame = null;
+
+        function initFlappyBird() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            const bird = {
+                x: 50,
+                y: canvas.height / 2,
+                width: 30,
+                height: 30,
+                velocity: 0,
+                gravity: 0.6,
+                jump: -15
+            };
+
+            let pipes = [];
+            let score = 0;
+            let highScore = parseInt(localStorage.getItem('flappyHighScore')) || 0;
+            let gameRunning = true;
+
+            function createPipe() {
+                const minHeight = 100;
+                const maxHeight = canvas.height - 150;
+                const height = Math.random() * (maxHeight - minHeight) + minHeight;
+                const gap = 120;
+                
+                pipes.push({
+                    x: canvas.width,
+                    topHeight: height,
+                    bottomY: height + gap,
+                    width: 60,
+                    passed: false
+                });
+            }
+
+            function drawBird() {
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(bird.x + bird.width / 2, bird.y + bird.height / 2, bird.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#FFA500';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(bird.x + bird.width / 2 + 8, bird.y + bird.height / 2 - 5, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function drawPipes() {
+                pipes.forEach(pipe => {
+                    // Top pipe
+                    ctx.fillStyle = '#22c55e';
+                    ctx.fillRect(pipe.x, 0, pipe.width, pipe.topHeight);
+                    
+                    // Bottom pipe
+                    ctx.fillRect(pipe.x, pipe.bottomY, pipe.width, canvas.height - pipe.bottomY);
+                    
+                    ctx.strokeStyle = '#16a34a';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(pipe.x, 0, pipe.width, pipe.topHeight);
+                    ctx.strokeRect(pipe.x, pipe.bottomY, pipe.width, canvas.height - pipe.bottomY);
+                });
+            }
+
+            function checkCollision() {
+                // Check pipes
+                pipes.forEach(pipe => {
+                    if (bird.x + bird.width > pipe.x && bird.x < pipe.x + pipe.width) {
+                        if (bird.y < pipe.topHeight || bird.y + bird.height > pipe.bottomY) {
+                            gameRunning = false;
+                        }
+                    }
+                });
+
+                // Check ground/ceiling
+                if (bird.y + bird.height > canvas.height || bird.y < 0) {
+                    gameRunning = false;
+                }
+            }
+
+            function updateScore() {
+                pipes.forEach(pipe => {
+                    if (!pipe.passed && bird.x > pipe.x + pipe.width) {
+                        pipe.passed = true;
+                        score++;
+                    }
+                });
+
+                document.getElementById('flappyScore').textContent = score;
+                
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('flappyHighScore', highScore);
+                    document.getElementById('flappyHigh').textContent = highScore;
+                }
+            }
+
+            function update() {
+                bird.velocity += bird.gravity;
+                bird.y += bird.velocity;
+
+                pipes.forEach(pipe => {
+                    pipe.x -= 6;
+                });
+
+                pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
+
+                if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 150) {
+                    createPipe();
+                }
+
+                updateScore();
+                checkCollision();
+            }
+
+            function draw() {
+                ctx.fillStyle = '#87CEEB';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                drawPipes();
+                drawBird();
+
+                if (!gameRunning) {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 40px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 40);
+                    ctx.font = 'bold 30px Arial';
+                    ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
+                    return;
+                }
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function gameLoop() {
+                update();
+                draw();
+            }
+
+            function handleJump() {
+                if (gameRunning) {
+                    bird.velocity = bird.jump;
+                    playSound('flip');
+                }
+            }
+
+            canvas.addEventListener('click', handleJump);
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && gameRunning) {
+                    e.preventDefault();
+                    handleJump();
+                }
+            });
+
+            document.getElementById('flappyHigh').textContent = highScore;
+            gameLoop();
+        }
+
+        // Memory Game
+        function startMemoryGame() {
+            playSound('modal');
+            document.getElementById('arenaTitle').textContent = '🧠 Memory Match';
+            const arenaBody = document.getElementById('arenaBody');
+            arenaBody.innerHTML = `
+                <div class="memory-stats">
+                    <div class="memory-stat">Moves: <span class="memory-stat-value" id="memoryMoves">0</span></div>
+                    <div class="memory-stat">Matched: <span class="memory-stat-value" id="memoryMatched">0</span>/8</div>
+                </div>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="game-controls">
+                    <button class="control-button" onclick="resetMemoryGame()">New Game</button>
+                    <button class="control-button" onclick="closeGameArena()">Close</button>
+                </div>
+            `;
+            document.getElementById('gameArenaModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                initMemoryGame();
+            }, 100);
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        function initMemoryGame() {
+            const emojis = ['🎮', '🎮', '🎯', '🎯', '🎪', '🎪', '🎨', '🎨', '🎭', '🎭', '🎬', '🎬', '🎸', '🎸', '🎺', '🎺'];
+            const shuffled = emojis.sort(() => Math.random() - 0.5);
+            
+            let flipped = [];
+            let matched = 0;
+            let moves = 0;
+
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+
+            shuffled.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.textContent = '?';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+
+                card.addEventListener('click', () => {
+                    if (flipped.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
+                        card.textContent = emoji;
+                        card.classList.add('flipped');
+                        flipped.push({card, emoji, index});
+
+                        if (flipped.length === 2) {
+                            moves++;
+                            document.getElementById('memoryMoves').textContent = moves;
+                            playSound('flip');
+
+                            if (flipped[0].emoji === flipped[1].emoji) {
+                                flipped[0].card.classList.add('matched');
+                                flipped[1].card.classList.add('matched');
+                                matched++;
+                                document.getElementById('memoryMatched').textContent = matched;
+                                flipped = [];
+
+                                if (matched === 8) {
+                                    setTimeout(() => {
+                                        alert(`🎉 You Won! Moves: ${moves}`);
+                                    }, 300);
+                                }
+                            } else {
+                                setTimeout(() => {
+                                    flipped[0].card.textContent = '?';
+                                    flipped[1].card.textContent = '?';
+                                    flipped[0].card.classList.remove('flipped');
+                                    flipped[1].card.classList.remove('flipped');
+                                    flipped = [];
+                                }, 800);
+                            }
+                        }
+                    }
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Reaction Time Game
+        function startReactionGame() {
+            playSound('modal');
+            document.getElementById('arenaTitle').textContent = '⚡ Reaction Time';
+            const arenaBody = document.getElementById('arenaBody');
+            arenaBody.innerHTML = `
+                <div class="reaction-result" id="reactionResult">Click when it turns cyan!</div>
+                <div class="reaction-box" id="reactionBox">Ready?</div>
+                <div class="game-controls">
+                    <button class="control-button" onclick="startReactionGame()">Play Again</button>
+                    <button class="control-button" onclick="closeGameArena()">Close</button>
+                </div>
+            `;
+            document.getElementById('gameArenaModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                initReactionGame();
+            }, 100);
+        }
+
+        function initReactionGame() {
+            const box = document.getElementById('reactionBox');
+            const result = document.getElementById('reactionResult');
+            let startTime;
+            let clicked = false;
+
+            box.classList.add('waiting');
+            box.textContent = 'Waiting...';
+
+            const delay = Math.random() * 3000 + 1000;
+            
+            const timeout = setTimeout(() => {
+                startTime = Date.now();
+                box.classList.remove('waiting');
+                box.classList.add('active');
+                box.textContent = 'GO!';
+                playSound('modal');
+                clicked = false;
+            }, delay);
+
+            box.onclick = () => {
+                if (startTime) {
+                    clearTimeout(timeout);
+                    const reactionTime = Date.now() - startTime;
+                    result.textContent = `Your reaction time: ${reactionTime}ms`;
+                    box.classList.remove('active', 'waiting');
+                    box.textContent = '✓ Clicked!';
+                    startTime = null;
+                    playSound('flip');
+                }
+            };
+        }
+
+        // Navigation Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        document.getElementById('characterModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('gameArenaModal').addEventListener('click', function(e) {
+            if (e.target === this) closeGameArena();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeGameArena();
+            }
+        });
+    </script>
+</body>
+</html>
