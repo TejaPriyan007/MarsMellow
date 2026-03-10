@@ -702,6 +702,7 @@
         .game-card:nth-child(5) { animation-delay: 0.5s; }
         .game-card:nth-child(6) { animation-delay: 0.6s; }
         .game-card:nth-child(7) { animation-delay: 0.7s; }
+        .game-card:nth-child(8) { animation-delay: 0.8s; }
 
         .game-card:hover {
             transform: translateY(-15px) scale(1.05);
@@ -865,6 +866,7 @@
             box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
             max-width: 100%;
             height: auto;
+            touch-action: none;
         }
 
         .game-score {
@@ -927,6 +929,7 @@
             font-size: 2rem;
             transition: all 0.3s ease;
             user-select: none;
+            touch-action: manipulation;
         }
 
         .memory-card:hover {
@@ -977,6 +980,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 3rem;
+            touch-action: manipulation;
         }
 
         .reaction-box.waiting {
@@ -1014,6 +1018,7 @@
             box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
             max-width: 100%;
             height: auto;
+            touch-action: none;
         }
 
         /* Aim Trainer */
@@ -1028,6 +1033,7 @@
             overflow: hidden;
             cursor: crosshair;
             box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            touch-action: none;
         }
 
         .aim-target {
@@ -1041,6 +1047,86 @@
 
         .aim-target:hover {
             transform: scale(1.1);
+        }
+
+        /* Touch D-Pad */
+        .touch-dpad {
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left . right"
+                ". down .";
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 50px 50px 50px;
+            gap: 5px;
+            justify-content: center;
+            margin: 1rem auto;
+        }
+
+        .dpad-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 12px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .dpad-btn:active {
+            transform: scale(0.9);
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+        }
+
+        .dpad-up { grid-area: up; }
+        .dpad-left { grid-area: left; }
+        .dpad-right { grid-area: right; }
+        .dpad-down { grid-area: down; }
+
+        /* Whack-a-Mole */
+        .whack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .whack-hole {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(26, 35, 50, 0.8));
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transition: all 0.15s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            overflow: hidden;
+        }
+
+        .whack-hole.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.4));
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+            transform: scale(1.08);
+        }
+
+        .whack-hole.hit {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(6, 182, 212, 0.4));
+            border-color: #22c55e;
         }
 
         /* Modal */
@@ -2153,6 +2239,14 @@
                     <div class="game-description">Smash all the bricks with a bouncing ball! Move the paddle with your mouse or touch.</div>
                     <button class="play-button" onclick="startBrickBreaker()">Play Now</button>
                 </div>
+
+                <!-- Anime Whack Game -->
+                <div class="game-card">
+                    <div class="game-icon">🔨</div>
+                    <div class="game-title">Anime Whack</div>
+                    <div class="game-description">Whack the anime critters before they hide! Tap or click fast to score big in 30 seconds.</div>
+                    <button class="play-button" onclick="startWhackGame()">Play Now</button>
+                </div>
             </div>
         </div>
     </section>
@@ -2350,7 +2444,7 @@
                     <button class="control-button" onclick="closeGameArena()">Close</button>
                 </div>
                 <div style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
-                    <p>Click or Press SPACE to Jump! 🎮</p>
+                    <p>Click / Tap or Press SPACE to Jump! 🎮</p>
                 </div>
             `;
             document.getElementById('gameArenaModal').classList.add('active');
@@ -2518,6 +2612,7 @@
             }
 
             canvas.addEventListener('click', handleJump);
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleJump(); }, { passive: false });
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space' && gameRunning) {
                     e.preventDefault();
@@ -2667,6 +2762,18 @@
                     playSound('flip');
                 }
             };
+            box.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (startTime) {
+                    clearTimeout(timeout);
+                    const reactionTime = Date.now() - startTime;
+                    result.textContent = `Your reaction time: ${reactionTime}ms`;
+                    box.classList.remove('active', 'waiting');
+                    box.textContent = '✓ Tapped!';
+                    startTime = null;
+                    playSound('flip');
+                }
+            }, { passive: false });
         }
 
         // ==================== SNAKE GAME ====================
@@ -2677,12 +2784,18 @@
             arenaBody.innerHTML = `
                 <canvas id="snakeCanvas" class="game-canvas-shared" width="400" height="400"></canvas>
                 <div class="game-score">Score: <span id="snakeScore">0</span> | High: <span id="snakeHigh">0</span></div>
+                <div class="touch-dpad" id="snakeDpad">
+                    <button class="dpad-btn dpad-up" data-dir="up">▲</button>
+                    <button class="dpad-btn dpad-left" data-dir="left">◀</button>
+                    <button class="dpad-btn dpad-right" data-dir="right">▶</button>
+                    <button class="dpad-btn dpad-down" data-dir="down">▼</button>
+                </div>
                 <div class="game-controls">
                     <button class="control-button" onclick="restartSnake()">Restart</button>
                     <button class="control-button" onclick="closeGameArena()">Close</button>
                 </div>
                 <div style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
-                    <p>Arrow Keys or WASD to move 🎮</p>
+                    <p>Arrow Keys / WASD / Swipe / Buttons 🎮</p>
                 </div>
             `;
             document.getElementById('gameArenaModal').classList.add('active');
@@ -2807,6 +2920,41 @@
             document.addEventListener('keydown', handleKey);
             draw();
 
+            // Swipe controls
+            let touchStartX = 0, touchStartY = 0;
+            canvas.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            canvas.addEventListener('touchend', (e) => {
+                if (!gameRunning) return;
+                const diffX = e.changedTouches[0].clientX - touchStartX;
+                const diffY = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 0 && dx !== -1) { dx = 1; dy = 0; }
+                    else if (diffX < 0 && dx !== 1) { dx = -1; dy = 0; }
+                } else {
+                    if (diffY > 0 && dy !== -1) { dx = 0; dy = 1; }
+                    else if (diffY < 0 && dy !== 1) { dx = 0; dy = -1; }
+                }
+            }, { passive: true });
+
+            // D-pad controls
+            document.querySelectorAll('#snakeDpad .dpad-btn').forEach(btn => {
+                const dirHandler = (e) => {
+                    e.preventDefault();
+                    if (!gameRunning) return;
+                    const dir = btn.dataset.dir;
+                    if (dir === 'up' && dy !== 1) { dx = 0; dy = -1; }
+                    else if (dir === 'down' && dy !== -1) { dx = 0; dy = 1; }
+                    else if (dir === 'left' && dx !== 1) { dx = -1; dy = 0; }
+                    else if (dir === 'right' && dx !== -1) { dx = 1; dy = 0; }
+                };
+                btn.addEventListener('click', dirHandler);
+                btn.addEventListener('touchstart', dirHandler, { passive: false });
+            });
+
             // Cleanup when arena closes
             const observer = new MutationObserver(() => {
                 if (!document.getElementById('gameArenaModal').classList.contains('active')) {
@@ -2831,7 +2979,7 @@
                     <button class="control-button" onclick="closeGameArena()">Close</button>
                 </div>
                 <div style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
-                    <p>Arrow Keys / A D / Mouse to move 🎮</p>
+                    <p>Arrow Keys / A D / Mouse / Touch 🎮</p>
                 </div>
             `;
             document.getElementById('gameArenaModal').classList.add('active');
@@ -3004,6 +3152,13 @@
             document.addEventListener('keydown', handleKeyDown);
             document.addEventListener('keyup', handleKeyUp);
             canvas.addEventListener('mousemove', handleMouse);
+            function handleSpaceTouch(e) {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                ship.x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width) - ship.width / 2;
+                ship.x = Math.max(0, Math.min(canvas.width - ship.width, ship.x));
+            }
+            canvas.addEventListener('touchmove', handleSpaceTouch, { passive: false });
 
             update();
 
@@ -3013,6 +3168,7 @@
                     document.removeEventListener('keydown', handleKeyDown);
                     document.removeEventListener('keyup', handleKeyUp);
                     canvas.removeEventListener('mousemove', handleMouse);
+                    canvas.removeEventListener('touchmove', handleSpaceTouch);
                     observer.disconnect();
                 }
             });
@@ -3066,6 +3222,17 @@
                     target.remove();
                     spawnTarget();
                 });
+
+                target.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!gameRunning) return;
+                    hits++;
+                    hitsEl.textContent = hits;
+                    playSound('flip');
+                    target.remove();
+                    spawnTarget();
+                }, { passive: false });
 
                 arena.appendChild(target);
 
@@ -3299,6 +3466,124 @@
                     cancelAnimationFrame(animId);
                     canvas.removeEventListener('mousemove', handleMouse);
                     canvas.removeEventListener('touchmove', handleTouch);
+                    observer.disconnect();
+                }
+            });
+            observer.observe(document.getElementById('gameArenaModal'), { attributes: true });
+        }
+
+        // ==================== ANIME WHACK ====================
+        function startWhackGame() {
+            playSound('modal');
+            document.getElementById('arenaTitle').textContent = '🔨 Anime Whack';
+            const arenaBody = document.getElementById('arenaBody');
+            arenaBody.innerHTML = `
+                <div class="game-score">Score: <span id="whackScore">0</span> | Time: <span id="whackTime">30</span>s</div>
+                <div class="whack-grid" id="whackGrid"></div>
+                <div class="game-controls">
+                    <button class="control-button" onclick="startWhackGame()">Play Again</button>
+                    <button class="control-button" onclick="closeGameArena()">Close</button>
+                </div>
+                <div style="color: var(--text-secondary); text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                    <p>Tap or Click the critters! 🎮</p>
+                </div>
+            `;
+            document.getElementById('gameArenaModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => initWhackGame(), 100);
+        }
+
+        function initWhackGame() {
+            const grid = document.getElementById('whackGrid');
+            const scoreEl = document.getElementById('whackScore');
+            const timeEl = document.getElementById('whackTime');
+            const moles = ['🐹', '🐰', '🦊', '🐱', '🐻', '👾'];
+            let score = 0;
+            let timeLeft = 30;
+            let gameRunning = true;
+            let spawnTimer = null;
+
+            grid.innerHTML = '';
+
+            for (let i = 0; i < 9; i++) {
+                const hole = document.createElement('div');
+                hole.className = 'whack-hole';
+                hole.dataset.index = i;
+
+                const whackHandler = (e) => {
+                    e.preventDefault();
+                    if (!gameRunning || !hole.classList.contains('active')) return;
+                    score++;
+                    scoreEl.textContent = score;
+                    hole.classList.remove('active');
+                    hole.classList.add('hit');
+                    hole.textContent = '💥';
+                    playSound('flip');
+                    setTimeout(() => {
+                        hole.classList.remove('hit');
+                        hole.textContent = '';
+                    }, 200);
+                };
+
+                hole.addEventListener('click', whackHandler);
+                hole.addEventListener('touchstart', (e) => { e.preventDefault(); whackHandler(e); }, { passive: false });
+
+                grid.appendChild(hole);
+            }
+
+            const holes = grid.querySelectorAll('.whack-hole');
+
+            function showMole() {
+                if (!gameRunning) return;
+                let available = [];
+                holes.forEach((h, i) => {
+                    if (!h.classList.contains('active')) available.push(i);
+                });
+                if (available.length === 0) return;
+                const idx = available[Math.floor(Math.random() * available.length)];
+                const hole = holes[idx];
+                const mole = moles[Math.floor(Math.random() * moles.length)];
+                hole.classList.add('active');
+                hole.textContent = mole;
+                const hideTime = Math.max(400, 1200 - score * 15);
+                setTimeout(() => {
+                    if (hole.classList.contains('active')) {
+                        hole.classList.remove('active');
+                        hole.textContent = '';
+                    }
+                }, hideTime);
+            }
+
+            function scheduleSpawn() {
+                if (!gameRunning) return;
+                const delay = Math.max(250, 700 - score * 8);
+                spawnTimer = setTimeout(() => {
+                    if (!gameRunning) return;
+                    showMole();
+                    if (Math.random() > 0.5) showMole();
+                    scheduleSpawn();
+                }, delay);
+            }
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                timeEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    clearTimeout(spawnTimer);
+                    gameRunning = false;
+                    grid.innerHTML = '<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;height:200px;flex-direction:column;"><div style="font-size:2.5rem;color:#fbbf24;font-weight:900;">Time\'s Up!</div><div style="font-size:1.5rem;color:#f1f5f9;margin-top:0.5rem;">You whacked <span style="color:#ec4899;font-weight:800;">' + score + '</span> critters!</div></div>';
+                }
+            }, 1000);
+
+            showMole();
+            scheduleSpawn();
+
+            const observer = new MutationObserver(() => {
+                if (!document.getElementById('gameArenaModal').classList.contains('active')) {
+                    clearInterval(countdown);
+                    clearTimeout(spawnTimer);
+                    gameRunning = false;
                     observer.disconnect();
                 }
             });
